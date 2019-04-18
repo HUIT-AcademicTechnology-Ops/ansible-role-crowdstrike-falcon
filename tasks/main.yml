@@ -1,0 +1,42 @@
+---
+# tasks file for ansible-role-crowdstrike-falcon-sensor
+
+- name: Validate required parameters and environment
+  assert:
+    that:
+      - cs_falcon_download_url is defined
+      - cs_falcon_cid is defined
+      - ansible_pkg_mgr is defined
+      - ansible_pkg_mgr in ['yum', 'apt']
+
+- name: download falcon package
+  get_url:
+    url: "{{ cs_falcon_download_url }}"
+    dest: /tmp
+  register: cs_falcon_download
+
+- name: install the falcon deb package
+  apt:
+   deb: "{{ cs_falcon_download.dest }}"
+  when: ansible_pkg_mgr == 'apt'
+  register: cs_falcon_pkg_install
+
+- name: install the falcon rpm package
+  yum:
+   name: "{{ cs_falcon_download.dest }}"
+  when: ansible_pkg_mgr == 'yum'
+  register: cs_falcon_pkg_install
+
+- name: set customer id for falcon sensor
+  shell: "/opt/CrowdStrike/falconctl -s -f --cid={{ cs_falcon_cid }}"
+  when: cs_falcon_pkg_install.changed
+
+- name: optionally remove agent id (i.e. if building a master image)
+  shell: "/opt/Crowdstrike/falconctl -d -f --aid"
+  when: cs_falcon_pkg_install.changed and cs_falcon_remove_agent_id
+
+- name: ensure falcon sensor process is started
+  service:
+    name: falcon-sensor
+    state: started
+  become: yes

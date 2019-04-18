@@ -1,0 +1,28 @@
+---
+# defaults file for ansible-role-crowdstrike-falcon-sensor
+
+
+# Installation options:
+# ---
+
+#
+# The installation instructions for Falcon on linux require that the client download the sensor package
+# from the Falcon console's "Sensor Downloads" screen, and place either on the host or somewhere reachable
+# by the host.   The installer is also required to copy down the Customer ID Checksum (CID) from the
+# "Sensor Downloads" screen for use during installation.   This role requires both of these parameters in the
+# following formats:
+#
+# A full http/https/ftp download url to the specific package that is to be installed on the remote host.   It is
+# assumed that the url has been locked down to the host or a set of hosts tied to the customer's Crowdstrike Falcon
+# account.
+# cs_falcon_download_url: https://my-personal-dropbox/falcon-sensor-4.x.deb
+#
+# CID is required for Falcon Sensor versions > 4.0.   We assume the version being installed
+# is > 4.0, so providing CID is required to run this role.
+# cs_falcon_cid: 12345-ABC
+
+# The following are optional parameters:
+#
+# Falcon requires that a master image remove the agent ID so that instances spun up from the master get
+# unique AIDs.   If installing this role on a base AMI or master image, set this flag to yes/true.
+cs_falcon_remove_agent_id: no

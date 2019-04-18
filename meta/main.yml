@@ -1,0 +1,24 @@
+galaxy_info:
+  author: Jaime Bermudez
+  description: Installs and configures Crowdstrike Falcon kernel module on Linux-based OS
+  company: HUIT Academic Technology at Harvard University
+  license: "license (BSD, MIT)"
+  min_ansible_version: 2.0
+  platforms:
+    - name: EL
+      versions:
+        - 6
+        - 7
+    - name: Ubuntu
+      versions:
+        - trusty
+        - xenial
+        - bionic
+    - name: Amazon
+      versions:
+        - all
+
+  galaxy_tags:
+    - crowdstrike
+    - security
+    - falcon
