@@ -14,29 +14,35 @@
     url: "{{ cs_falcon_download_url }}"
     dest: /tmp
   register: cs_falcon_download
+  until: cs_falcon_download is success
+  retries: 3
+  delay: 2
 
 - name: install the falcon deb package
   apt:
-   deb: "{{ cs_falcon_download.dest }}"
+    deb: "{{ cs_falcon_download.dest }}"
   when: ansible_pkg_mgr == 'apt'
-  register: cs_falcon_pkg_install
+  register: cs_falcon_pkg_deb_install
 
 - name: install the falcon rpm package
   yum:
-   name: "{{ cs_falcon_download.dest }}"
+    name: "{{ cs_falcon_download.dest }}"
   when: ansible_pkg_mgr == 'yum'
-  register: cs_falcon_pkg_install
+  register: cs_falcon_pkg_rpm_install
+
+- name: store package installation result as boolean var
+  set_fact:
+    cs_falcon_pkg_install: cs_falcon_pkg_deb_install.changed or cs_falcon_pkg_rpm_install.changed
 
 - name: set customer id for falcon sensor
-  shell: "/opt/CrowdStrike/falconctl -s -f --cid={{ cs_falcon_cid }}"
-  when: cs_falcon_pkg_install.changed
+  command: "/opt/CrowdStrike/falconctl -s -f --cid={{ cs_falcon_cid }}"
+  when: cs_falcon_pkg_install
 
 - name: optionally remove agent id (i.e. if building a master image)
-  shell: "/opt/Crowdstrike/falconctl -d -f --aid"
-  when: cs_falcon_pkg_install.changed and cs_falcon_remove_agent_id
+  command: "/opt/Crowdstrike/falconctl -d -f --aid"
+  when: cs_falcon_pkg_install and cs_falcon_remove_agent_id
 
 - name: ensure falcon sensor process is started
   service:
     name: falcon-sensor
     state: started
-  become: yes

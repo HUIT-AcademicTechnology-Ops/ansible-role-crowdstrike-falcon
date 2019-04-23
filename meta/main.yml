@@ -1,3 +1,4 @@
+---
 galaxy_info:
   author: Jaime Bermudez
   description: Installs and configures Crowdstrike Falcon kernel module on Linux-based OS
