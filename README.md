@@ -34,8 +34,8 @@ Below are available variables for configuring the installation and setup of the 
 # The following are optional parameters:
 #
 # Falcon requires that a master image remove the agent ID so that instances spun up from the master get
-# unique AIDs.   If installing this role on a base AMI or master image, set this flag to yes/true.
-cs_falcon_remove_agent_id: no
+# unique AIDs.   If installing this role on a base AMI or master image, set this flag to `true`.
+cs_falcon_remove_agent_id: false
 ```
 
 Dependencies
