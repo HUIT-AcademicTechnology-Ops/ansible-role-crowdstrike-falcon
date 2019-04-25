@@ -39,7 +39,7 @@
   when: cs_falcon_pkg_install
 
 - name: optionally remove agent id (i.e. if building a master image)
-  command: "/opt/Crowdstrike/falconctl -d -f --aid"
+  command: "/opt/CrowdStrike/falconctl -d -f --aid"
   when: cs_falcon_pkg_install and cs_falcon_remove_agent_id
 
 - name: ensure falcon sensor process is started
