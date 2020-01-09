@@ -46,3 +46,4 @@
   service:
     name: falcon-sensor
     state: started
+  when: not cs_falcon_remove_agent_id
